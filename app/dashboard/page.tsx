@@ -4,17 +4,18 @@ import { Card } from "../ui/dashboard/cards";
 import LatestInvoices from "../ui/dashboard/latest-invoices";
 import RevenueChart from "../ui/dashboard/revenue-chart";
 import { lusitana } from '../ui/invoices/fonts'
+import { SUBRESOURCE_INTEGRITY_MANIFEST } from "next/dist/shared/lib/constants";
+import { Suspense } from "react";
+import { LatestInvoicesSkeleton, RevenueChartSkeleton } from "../ui/skeletons";
 
 export default async function Page(){
-    const revenue = await fetchRevenue()
-    const latestInvoices = await fetchLatestInvoices();
+    // <-----
     const {
         numberOfInvoices,
         numberOfCustomers,
         totalPaidInvoices,
         totalPendingInvoices,
       } = await fetchCardData(); // wait for fetchLatestInvoices() to finish
-    console.log(latestInvoices)
 
     return  (
     <main>
@@ -32,8 +33,12 @@ export default async function Page(){
         />
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        <RevenueChart revenue={revenue}  />
-        <LatestInvoices latestInvoices={latestInvoices} />
+        <Suspense fallback={<RevenueChartSkeleton/>}>
+          <RevenueChart/>
+        </Suspense>
+        <Suspense fallback={<LatestInvoicesSkeleton/> }>
+          <LatestInvoices/>
+        </Suspense>
       </div>
     </main>
   );
