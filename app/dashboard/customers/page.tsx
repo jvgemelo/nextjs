@@ -1,3 +1,5 @@
+'use client'
+import { supabase } from '@/app/utils/supabase/client'
 import {
     Table,
     Thead,
@@ -9,8 +11,27 @@ import {
     TableCaption,
     TableContainer,
   } from '@chakra-ui/react'
-
+  import { useEffect, useState } from 'react'
+  
 export default function CustomersPage(){
+  const [data, setData] = useState([])
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await supabase
+        .from('test1') // Reemplaza con el nombre de tu tabla
+        .select('*')
+
+      if (error) {
+        console.error('Error fetching data:', error)
+      } else {
+        setData(data)
+      }
+    }
+
+    fetchData()
+  }, [])
+
     return <TableContainer>
     <Table variant='simple'>
       <TableCaption>Imperial to metric conversion factors</TableCaption>
@@ -104,6 +125,12 @@ export default function CustomersPage(){
           <Th>into</Th>
           <Th isNumeric>multiply by</Th>
         </Tr>
+        <h1>Datos de Supabase</h1>
+      
+        {data.map((item) => (
+          <div key={item.id}>{item.name}</div> // Reemplaza con la columna que quieres mostrar
+        ))}
+      
       </Tfoot>
     </Table>
   </TableContainer>

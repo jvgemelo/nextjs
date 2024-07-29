@@ -1,0 +1,65 @@
+version: '3.6'
+services:
+  supabase-db:
+    image: supabase/postgres:latest
+    container_name: supabase-db
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: 'your-password'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_DB: 'postgres'
+
+  supabase-rest:
+    image: supabase/gotrue:latest
+    container_name: supabase-rest
+    ports:
+      - '8000:8000'
+    environment:
+      GOTRUE_JWT_SECRET: 'your-jwt-secret'
+      GOTRUE_SITE_URL: 'http://localhost:3000'
+      GOTRUE_API_URL: 'http://localhost:8000'
+      GOTRUE_DB_DRIVER: 'postgres'
+      GOTRUE_DB_DATABASE_URL: 'postgresql://postgres:your-password@supabase-db:5432/postgres'
+
+  supabase-storage:
+    image: supabase/storage:latest
+    container_name: supabase-storage
+    ports:
+      - '5000:5000'
+    environment:
+      ANON_KEY: 'your-anon-key'
+      SERVICE_KEY: 'your-service-key'
+      POSTGREST_URL: 'http://localhost:3000'
+      PGRST_JWT_SECRET: 'your-jwt-secret'
+      PGRST_DB_URI: 'postgresql://postgres:your-password@supabase-db:5432/postgres'
+      FILE_STORAGE_BACKEND: 'file'
+
+  supabase-realtime:
+    image: supabase/realtime:latest
+    container_name: supabase-realtime
+    ports:
+      - '4000:4000'
+    environment:
+      DB_HOST: 'supabase-db'
+      DB_NAME: 'postgres'
+      DB_USER: 'postgres'
+      DB_PASSWORD: 'your-password'
+      DB_PORT: '5432'
+      JWT_SECRET: 'your-jwt-secret'
+      PORT: '4000'
+
+  supabase-postgrest:
+    image: postgrest/postgrest:latest
+    container_name: supabase-postgrest
+    ports:
+      - '3000:3000'
+    environment:
+      PGRST_DB_URI: 'postgresql://postgres:your-password@supabase-db:5432/postgres'
+      PGRST_DB_SCHEMAS: 'public'
+      PGRST_JWT_SECRET: 'your-jwt-secret'
+      PGRST_DB_ANON_ROLE: 'postgres'
+
+networks:
+  default:
+    name: supabase_network

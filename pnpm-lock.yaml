@@ -53,6 +53,9 @@ importers:
       react-dom:
         specifier: ^19.0.0-rc-f38c22b244-20240704
         version: 19.0.0-rc-fb9a90fa48-20240614(react@19.0.0-rc-fb9a90fa48-20240614)
+      supabase:
+        specifier: link:supabase/tap/supabase
+        version: link:supabase/tap/supabase
       tailwindcss:
         specifier: 3.4.4
         version: 3.4.4
