@@ -13,8 +13,16 @@ import {
   } from '@chakra-ui/react'
   import { useEffect, useState } from 'react'
   
+  interface Test1Data {
+    id: number;
+    column1: string;
+    column2: string;
+    name: string;
+    // Añade aquí todas las columnas de tu tabla
+  }
 export default function CustomersPage(){
-  const [data, setData] = useState([])
+  const [data, setData] = useState<Test1Data[]>([]);
+  const [error, setError] = useState<string | null>(null);
   
   useEffect(() => {
     const fetchData = async () => {
